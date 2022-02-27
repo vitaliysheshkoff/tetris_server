@@ -28,6 +28,12 @@ io.on('connection', (socket) => {
 
     socket.on("db", () => {
 
+        console.log( process.env.HOST);
+        console.log( process.env.PORT);
+        console.log( process.env.DB);
+        console.log( process.env.USER);
+        console.log( process.env.PASSWORD);
+
         console.log("getting DB...")
 
         // get data from database: users and chats
