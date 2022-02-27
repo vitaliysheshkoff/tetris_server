@@ -27,7 +27,7 @@ const db = pgp(cn);
 io.on('connection', (socket) => {
 
     socket.on("db", () => {
-
+        console.log(cn);
         console.log( process.env.HOST);
         console.log( process.env.PORT);
         console.log( process.env.DB);
