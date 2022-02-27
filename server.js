@@ -11,13 +11,13 @@ const pgp = require('pg-promise')();
 const NodeRSA = require('node-rsa');
 
 const cn = {
-    host:  process.env.HOST,
-    port: process.env.PORT,
-    database: process.env.DB,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
+    host: process.env.HOST_TG_DB,
+    port: process.env.PORT_TG_DB,
+    database: process.env.TG_DB,
+    user: process.env.USER_TG_DB,
+    password: process.env.PASSWORD_TG_DB,
     ssl: {
-        require: true,
+        // require: true,
         rejectUnauthorized: false,
     }
 };
@@ -28,12 +28,14 @@ const db = pgp(cn);
 io.on('connection', (socket) => {
 
     socket.on("db", () => {
+
+        
         console.log(cn);
-        console.log( process.env.HOST);
-        console.log( process.env.PORT);
-        console.log( process.env.DB);
-        console.log( process.env.USER);
-        console.log( process.env.PASSWORD);
+        console.log( process.env.HOST_TG_DB);
+        console.log( process.env.PORT_TG_DB);
+        console.log( process.env.TG_DB);
+        console.log( process.env.USER_TG_DB);
+        console.log( process.env.PASSWORD_TG_DB);
 
         console.log("getting DB...")
 
