@@ -6,7 +6,79 @@ const io = require('socket.io')(http, {
     cors: { origin: '*' }
 })
 
+const pgp = require('pg-promise')();
+
+const NodeRSA = require('node-rsa');
+
+const cn = {
+    host:  process.env.HOST,
+    port: process.env.PORT,
+    database: process.env.DB,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    ssl: {
+        rejectUnauthorized: false,
+    }
+};
+
+// connect to database 
+const db = pgp(cn);
+
 io.on('connection', (socket) => {
+
+    socket.on("db", () => {
+
+        console.log("getting DB...")
+
+        // get data from database: users and chats
+        getData().catch(error => {
+            console.log(error)
+        })
+
+    });
+
+    async function getUsers() {
+        let res = await db.query("SELECT user_db_id, user_name, user_nickname FROM users");
+        return res;
+    }
+
+    async function getChats() {
+        let res = await db.query("SELECT chat_db_id, chat_full_name FROM chats")
+        return res
+    }
+
+    async function getData() {
+        let users_list = await getUsers()
+            .catch(error => {
+                console.log(error)
+            });
+        let chats_list = await getChats()
+            .catch(error => {
+                console.log(error)
+            });
+
+        for (var i = 0; i < users_list.length; i++) {
+            users_list[i].user_name = (users_list[i].user_name) ? users_list[i].user_name.trim() : null;
+            users_list[i].user_nickname = (users_list[i].user_nickname) ? users_list[i].user_nickname.trim() : null;
+        }
+
+        for (var i = 0; i < chats_list.length; i++) {
+            chats_list[i].chat_full_name = (chats_list[i].chat_full_name) ? chats_list[i].chat_full_name.trim() : null;
+            chats_list[i].chat_db_id *= -1;
+        }
+
+        console.log("DB:")
+        console.log("users_list size: " + users_list.length)
+        console.log("chats_list size: " + chats_list.length)
+
+        // send users list and chats list
+        try {
+            socket.emit('db', users_list, chats_list);
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 
     socket.on('create', (room) => {
 
