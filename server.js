@@ -17,6 +17,7 @@ const cn = {
     user: process.env.USER,
     password: process.env.PASSWORD,
     ssl: {
+        require: true,
         rejectUnauthorized: false,
     }
 };
