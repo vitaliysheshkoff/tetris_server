@@ -27,25 +27,18 @@ const db = pgp(cn);
 
 io.on('connection', (socket) => {
 
-    socket.on("db", () => {
-
-        // get leaderboard
-        socket.on("leaderboard", () => {
-            db.query("SELECT * FROM leaderboard ORDER BY score DESC").then((result) => {
-                console.log('get leaderboard from DB');
-                //send leaderboard
-                socket.emit("leaderboard", result);
-            }).catch(error => {
-                console.log(error)
-            });
+    // get leaderboard
+    socket.on("leaderboard", () => {
+        db.query("SELECT * FROM leaderboard ORDER BY score DESC").then((result) => {
+            console.log('get leaderboard from DB');
+            //send leaderboard
+            socket.emit("leaderboard", result);
+        }).catch(error => {
+            console.log(error)
         });
+    });
 
-        console.log(cn);
-        console.log(process.env.HOST_TG_DB);
-        console.log(process.env.PORT_TG_DB);
-        console.log(process.env.TG_DB);
-        console.log(process.env.USER_TG_DB);
-        console.log(process.env.PASSWORD_TG_DB);
+    socket.on("db", () => {
 
         console.log("getting DB...")
 
